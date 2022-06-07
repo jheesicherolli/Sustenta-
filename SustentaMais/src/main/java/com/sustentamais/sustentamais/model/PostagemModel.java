@@ -24,7 +24,7 @@ public class PostagemModel {
 	private long id;
 	
 	@NotNull
-	@Size(min = 5, max = 40)
+	@Size(min = 3, max = 40)
 	private String titulo;
 	
 	@NotNull
@@ -36,9 +36,13 @@ public class PostagemModel {
 	private Date data_hora = new java.sql.Date(System.currentTimeMillis());
 	
 	@ManyToOne
-	@JsonIgnoreProperties("postagem")
+	@JsonIgnoreProperties("postagem")	
 	private TemaModel tema;
 
+	@ManyToOne
+	@JsonIgnoreProperties("postagem")
+	private UsuarioModel usuario;
+	
 	public long getId() {
 		return id;
 	}
@@ -85,6 +89,14 @@ public class PostagemModel {
 
 	public void setTema(TemaModel tema) {
 		this.tema = tema;
+	}
+	
+	public UsuarioModel getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(UsuarioModel usuario) {
+		this.usuario = usuario;
 	}
 	
 }

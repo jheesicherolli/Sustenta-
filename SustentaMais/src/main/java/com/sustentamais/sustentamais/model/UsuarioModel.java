@@ -23,14 +23,14 @@ public class UsuarioModel {
 	private long id;
 	
 	@NotNull
-	@Size(min = 3, max = 30)
 	private String nome;
 	
 	@NotNull
 	private String email;
 	
+	private String usuario;
+	
 	@NotNull
-	@Size(min = 8, max = 15)
 	private String senha;
 	
 	private String foto;
@@ -38,6 +38,7 @@ public class UsuarioModel {
 	private String localidade;
 	
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+	
 	@JsonIgnoreProperties("usuario")
 	private List<PostagemModel> postagem;
 
@@ -96,5 +97,14 @@ public class UsuarioModel {
 	public void setPostagem(List<PostagemModel> postagem) {
 		this.postagem = postagem;
 	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
+	
 	
 }

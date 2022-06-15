@@ -42,6 +42,11 @@ public class UsuarioModel {
 	@JsonIgnoreProperties("usuario")
 	private List<PostagemModel> postagem;
 
+	public UsuarioModel(long l, String string, String string2, String string3, String string4, String string5,
+			String string6) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public long getId() {
 		return id;
 	}

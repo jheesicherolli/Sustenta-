@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.sustentamais.sustentamais.model.UserLogin;
 import com.sustentamais.sustentamais.model.UsuarioModel;
@@ -16,20 +18,53 @@ import com.sustentamais.sustentamais.repository.UsuarioRepository;
 public class UsuarioService {
 	
 	@Autowired
-	private UsuarioRepository repository;
+	private UsuarioRepository usuarioRepository;
 	
-	public UsuarioModel CadastrarUsuario(UsuarioModel usuario) {
+	private String criptografarSenha(String senha) {
+
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
-		String senhaEncoder = encoder.encode(usuario.getSenha());
-		usuario.setSenha(senhaEncoder);
+		return encoder.encode(senha);
+
+	}
+	
+	public Optional<UsuarioModel> atualizarUsuario(UsuarioModel usuario) {
 		
-		return repository.save(usuario);
+		if(usuarioRepository.findById(usuario.getId()).isPresent()) {
+			
+		
+			Optional<UsuarioModel> buscaUsuario = usuarioRepository.findByUsuario(usuario.getUsuario());
+			
+	
+			if ( (buscaUsuario.isPresent()) && ( buscaUsuario.get().getId() != usuario.getId()))
+				throw new ResponseStatusException(
+						HttpStatus.BAD_REQUEST, "Usuário já existe!", null);
+
+			usuario.setSenha(criptografarSenha(usuario.getSenha()));
+
+		
+		 
+			return Optional.ofNullable(usuarioRepository.save(usuario));
+			
+		}
+		return Optional.empty();
+	}
+	
+	public Optional<UsuarioModel> CadastrarUsuario(UsuarioModel usuario) {
+		
+		if (usuarioRepository.findByUsuario(usuario.getUsuario()).isPresent())
+			return Optional.empty();
+	
+		usuario.setSenha(criptografarSenha(usuario.getSenha()));
+
+	
+		return Optional.of(usuarioRepository.save(usuario));
+		
 	}
 	
 	public Optional<UserLogin> Logar(Optional<UserLogin> user){
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		Optional<UsuarioModel> usuario = repository.findByUsuario(user.get().getUsuario());
+		Optional<UsuarioModel> usuario = usuarioRepository.findByUsuario(user.get().getUsuario());
 		
 		if(usuario.isPresent()) {
 			if(encoder.matches(user.get().getSenha(), usuario.get().getSenha())) {

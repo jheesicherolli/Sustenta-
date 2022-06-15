@@ -21,63 +21,74 @@ import com.sustentamais.sustentamais.model.TemaModel;
 import com.sustentamais.sustentamais.repository.TemaRepository;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/tema")
 public class TemaController {
 	
 	@Autowired
-	private TemaRepository repository;
+	private TemaRepository temaRepository;
 	
 	@GetMapping
 	public ResponseEntity<List<TemaModel>> getAll() {
-		return ResponseEntity.ok(repository.findAll());
+		return ResponseEntity.ok(temaRepository.findAll());
 
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<TemaModel> getById(@PathVariable long id){
-		return repository.findById(id).map(resp -> ResponseEntity.ok(resp)).orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<TemaModel> getById(@PathVariable Long id){
+		return temaRepository.findById(id)
+				.map(resp -> ResponseEntity.ok(resp))
+				.orElse(ResponseEntity.notFound().build());
 		
-		
+	
 	}
 	
 	@GetMapping("/titulo/{tema}")
 	public ResponseEntity<List<TemaModel>> getByName(@PathVariable String tema){
-		return ResponseEntity.ok(repository.findAllByTemaContainingIgnoreCase(tema));
+		return ResponseEntity.ok(temaRepository.findAllByTemaContainingIgnoreCase(tema));
 		
 	}
 	
 	@GetMapping("/categoria/{categoria}")
 	public ResponseEntity<List<TemaModel>> getByCategoria(@PathVariable String categoria){
-		return ResponseEntity.ok(repository.findAllByCategoriaContainingIgnoreCase(categoria));
+		return ResponseEntity.ok(temaRepository.findAllByCategoriaContainingIgnoreCase(categoria));
 		
 	}
 	
 	
 	@PostMapping
 	public ResponseEntity<TemaModel> post(@Valid @RequestBody TemaModel tema) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema));
+		return ResponseEntity.status(HttpStatus.CREATED).body(temaRepository.save(tema));
 	
 	}
 	
 	@PutMapping
 	public ResponseEntity<TemaModel> put(@Valid @RequestBody TemaModel tema) {
-		return ResponseEntity.ok(repository.save(tema));
+		
+		return temaRepository.findById(tema.getId())
+				.map(resposta -> {
+					return ResponseEntity.ok().body(temaRepository.save(tema));
+				})
+				.orElse(ResponseEntity.notFound().build());
+
 	}
 	
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable long id) {
-		repository.deleteById(id);
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		
+		return temaRepository.findById(id)
+				.map(resposta -> {
+					temaRepository.deleteById(id);
+					return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+				})
+				.orElse(ResponseEntity.notFound().build());
+
+			
 	}
 	
 	
 	
-	/*
-	@DeleteMapping("/{tema}")
-	public void delete(@PathVariable String tema) {
-		repository.deleteByTema(tema);
-	}
-	*/
+
 	
 	
 	

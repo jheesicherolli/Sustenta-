@@ -9,8 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
+import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -19,23 +18,23 @@ public class TemaModel {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
-	@NotNull
+	@NotBlank(message = "O atributo Tema é obrigatório e não pode conter espaços em branco")
 	private String tema;
 	
-	@NotNull
+	@NotBlank(message = "O atributo categoria é obrigatório e não pode conter espaços em branco")
 	private String categoria;
 	
-	@OneToMany(mappedBy = "tema", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tema", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("tema")
 	private List<PostagemModel> postagem;
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -2,9 +2,9 @@ package com.sustentamais.sustentamais.model;
 
 public class UserLogin {
 	
-	private String nome;
+	private Long id;
 	
-	private String email;
+	private String nome;
 	
 	private String usuario;
 	
@@ -16,10 +16,13 @@ public class UserLogin {
 	
 	private String token;
 
-	public UserLogin(long l, String string, String string2, String string3, String string4, String string5,
-			String string6, String string7) {
+	public UserLogin(Long id, String nome, String usuario, String senha, String foto, String localidade,
+			String token) {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public UserLogin() {}
+	
 
 	public String getNome() {
 		return nome;
@@ -29,12 +32,13 @@ public class UserLogin {
 		this.nome = nome;
 	}
 
-	public String getEmail() {
-		return email;
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUsuario() {

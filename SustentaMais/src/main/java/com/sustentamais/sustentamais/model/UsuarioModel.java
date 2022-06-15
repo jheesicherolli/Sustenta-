@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,38 +22,44 @@ public class UsuarioModel {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
-	@NotNull
+	@NotNull(message = "O atributo Nome é Obrigatório!")
 	private String nome;
 	
-	@NotNull
-	private String email;
-	
+	@NotNull(message = "O atributo Usuário é Obrigatório!")
+	@Email(message = "O atributo Usuário deve ser um email válido!")
 	private String usuario;
 	
-	@NotNull
+	@NotBlank(message = "O atributo Senha é Obrigatório!")
+	@Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
 	private String senha;
 	
 	private String foto;
 	
 	private String localidade;
 	
-	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("usuario")
 	private List<PostagemModel> postagem;
 
-	public UsuarioModel(long l, String string, String string2, String string3, String string4, String string5,
-			String string6) {
+	public UsuarioModel(Long id, String nome, String usuario, String senha, String foto, String localidade) {
 		// TODO Auto-generated constructor stub
+		this.nome = nome;
+		this.usuario = usuario;
+		this.senha = senha;
+		this.foto = foto;
+		this.localidade = localidade;
+		
 	}
+	
+	public UsuarioModel() {	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -63,13 +71,6 @@ public class UsuarioModel {
 		this.nome = nome;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
 	public String getSenha() {
 		return senha;

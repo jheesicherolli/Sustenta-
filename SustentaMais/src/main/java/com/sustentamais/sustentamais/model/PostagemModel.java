@@ -1,17 +1,17 @@
 package com.sustentamais.sustentamais.model;
 
-import java.util.Date;
-
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -21,19 +21,20 @@ public class PostagemModel {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
-	@NotNull
-	@Size(min = 3, max = 40)
+	@NotBlank(message = "O atributo título é Obrigatório e não pode utilizar espaços em branco!") 
+	@Size(min = 5, max = 100, message = "O atributo título deve conter no mínimo 05 e no máximo 100 caracteres")
 	private String titulo;
 	
-	@NotNull
+	@NotNull(message = "O atributo conteúdo é Obrigatório!")
+	@Size(min = 10, max = 1000, message = "O atributo texto deve conter no mínimo 10 e no máximo 500 caracteres")
 	private String conteudo;
 	
 	private String anexos;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date data_hora = new java.sql.Date(System.currentTimeMillis());
+	@UpdateTimestamp
+	private LocalDateTime data;
 	
 	@ManyToOne
 	@JsonIgnoreProperties("postagem")	
@@ -42,11 +43,13 @@ public class PostagemModel {
 	@JsonIgnoreProperties("postagem")
 	private UsuarioModel usuario; 
 	
-	public long getId() {
+
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -74,12 +77,14 @@ public class PostagemModel {
 		this.anexos = anexos;
 	}
 
-	public Date getData_hora() {
-		return data_hora;
+
+
+	public LocalDateTime getData() {
+		return data;
 	}
 
-	public void setData_hora(Date data_hora) {
-		this.data_hora = data_hora;
+	public void setData(LocalDateTime data) {
+		this.data = data;
 	}
 
 	public TemaModel getTema() {
